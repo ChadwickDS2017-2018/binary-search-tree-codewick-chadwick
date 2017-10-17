@@ -177,6 +177,7 @@ public class BinarySearchTreeTest {
 		values.add(7);
 		for(Integer i : tree){
 			Integer toCheck = values.remove();
+			System.out.println(toCheck);
 			assertEquals(toCheck, i);
 		}
 		

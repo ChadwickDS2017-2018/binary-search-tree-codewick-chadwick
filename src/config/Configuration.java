@@ -3,6 +3,9 @@ package config;
 import structures.BinarySearchTree;
 import structures.BinaryTreeNode;
 import structures.BinaryTreeUtility;
+import stuff.BinarySearchTreeImpl;
+import stuff.BinaryTreeNodeImpl;
+import stuff.BinaryTreeUtilityImpl;
 
 
 /**
@@ -15,19 +18,19 @@ import structures.BinaryTreeUtility;
 public class Configuration {
 
 	
-	public static final String STUDENT_ID_NUMBER = "12345678";
+	public static final String STUDENT_ID_NUMBER = "33811";
 	
 
 	public static <T> BinaryTreeNode<T> createBinaryTreeNode(BinaryTreeNode<T> left, T elem, BinaryTreeNode<T> right){
-		return null;
+		return new BinaryTreeNodeImpl<T>(left, elem, right);
 	}
 	
 	public static BinaryTreeUtility createBinaryTreeUtility(){
-		return null;
+		return new BinaryTreeUtilityImpl();
 	}
 	
 	public static <T extends Comparable<? super T>> BinarySearchTree<T> createBinarySearchTree(){
-		return null;
+		return new BinarySearchTreeImpl<T>();
 	}
 	
 
