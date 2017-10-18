@@ -19,13 +19,13 @@ public class BinarySearchTreeImpl<T extends Comparable<? super T>> implements Bi
 	public BinarySearchTree<T> add(T toAdd) {
 		if (toAdd == null)
 			throw new NullPointerException("Adderthing is null");
-
+		size++;
 		if (isEmpty()) {
 			root = new BinaryTreeNodeImpl<T>(null, toAdd, null);
-			size++;
+			
 			return this;
 		} else {
-
+			
 			BinaryTreeNode<T> current = root;
 			return add(toAdd, current);
 		}
@@ -38,8 +38,6 @@ public class BinarySearchTreeImpl<T extends Comparable<? super T>> implements Bi
 			if (!node.hasLeftChild()) {
 				BinaryTreeNode<T> temp = new BinaryTreeNodeImpl<T> (null, toAdd, null);
 				node.setLeftChild(temp);
-				size++;
-				return this;
 			} else {
 				add(toAdd, node.getLeftChild());
 			}
@@ -47,7 +45,6 @@ public class BinarySearchTreeImpl<T extends Comparable<? super T>> implements Bi
 			if (!node.hasRightChild()) {
 				BinaryTreeNode<T> temp = new BinaryTreeNodeImpl<T> (null, toAdd, null);
 				node.setRightChild(temp);
-				size++;
 				return this;
 			} else {
 				add(toAdd, node.getRightChild());
@@ -129,7 +126,7 @@ public class BinarySearchTreeImpl<T extends Comparable<? super T>> implements Bi
 	public BinaryTreeNode<T> toBinaryTreeNode() {
 		if (isEmpty())
 			throw new IllegalStateException("Node thing is empty");
-		return null;
+		return root;
 	}
 
 	@Override
@@ -141,54 +138,35 @@ public class BinarySearchTreeImpl<T extends Comparable<? super T>> implements Bi
 	@Override
 	public boolean remove(T toRemove) {
 		if (isEmpty()) {
-			System.out.println("wefq");
 			return false;
 		}
 		else {
-			BinaryTreeNode<T> parent = null;
 			if (toRemove.equals(root.getData())) {
-				BinaryTreeNode<T> temp = replacement(root);
-				if (temp == null)
-					root = null;
-				else {
-					root.setData(temp.getData());
-					if (temp.hasRightChild())
-						root.setRightChild(temp.getRightChild());
-					if (temp.hasLeftChild())
-						root.setLeftChild(temp.getLeftChild());
-				}
-				
+				root = replacement(root);
 				size--;
 				return true;
 			}
 			else {
-				parent = root;
 				if (toRemove.compareTo(root.getData()) < 0) {
 					if (root.hasLeftChild()) {
-						return remove(toRemove, root.getLeftChild(), parent);
-					}
-					else {
-						return false;
+						return remove(toRemove, root.getLeftChild(), root);
 					}
 				} else {
 					if (root.hasRightChild()) {
-						return remove(toRemove, root.getRightChild(), parent);
+						return remove(toRemove, root.getRightChild(), root);
 					}
-					else {
-						return false;
-					}
+
 				}
 			}
 		}
-
+		return false;
 	}
 
 	private boolean remove(T target, BinaryTreeNode<T> current, BinaryTreeNode<T> parent) {
-		if (current == null) {
+		if(current == null)
 			return false;
-		}
-		else {
-			if (target.equals(current.getData())) {
+		
+		if (target.equals(current.getData())) {
 				BinaryTreeNode<T> temp = replacement(current);
 				if (parent.getRightChild() == current) {
 					parent.setRightChild(temp);
@@ -199,14 +177,14 @@ public class BinarySearchTreeImpl<T extends Comparable<? super T>> implements Bi
 				return true;
 			}
 			else {
-				parent = current;
+				
 				if (target.compareTo(current.getData()) < 0) {
-					return remove(target, current.getLeftChild(), parent);
+					return remove(target, current.getLeftChild(), current);
 				} else {
-					return remove(target, current.getRightChild(), parent);
+					return remove(target, current.getRightChild(), current);
 				}
 			}
-		}
+			
 	}
 
 	private BinaryTreeNode<T> replacement(BinaryTreeNode<T> node) {
@@ -228,8 +206,10 @@ public class BinarySearchTreeImpl<T extends Comparable<? super T>> implements Bi
 			}
 
 			current.setLeftChild(node.getLeftChild());
-			if (node.getRightChild() != current) {
+			if (!node.getRightChild().equals(current)) {
+				if (current.hasRightChild()) {
 				parent.setLeftChild(current.getRightChild());
+				}
 				current.setRightChild(node.getRightChild());
 			}
 			result = current;
