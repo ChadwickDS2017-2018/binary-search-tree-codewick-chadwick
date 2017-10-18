@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -17,7 +18,7 @@ import config.Configuration;
 public class BinarySearchTreeTest {
 
 	private BinarySearchTree<Integer> tree;
-	private static final int SPEED_TEST = 1 << 12;
+	private static final int SPEED_TEST = 10; //1 << 12;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -95,7 +96,6 @@ public class BinarySearchTreeTest {
 		assertEquals(3, tree.size());
 		assertFalse(tree.remove(1));
 		assertEquals(3, tree.size());
-		
 		assertTrue(tree.remove(5));
 		assertEquals(2, tree.size());
 		assertTrue(tree.remove(5));
@@ -118,9 +118,13 @@ public class BinarySearchTreeTest {
 			assertEquals("Add should return tree for convenience.", tree, tree.add(next));
 			assertTrue("After add, contains should return true.", tree.contains(next));
 		}
+		Iterator<Integer> iter = tree.iterator();
+		while(iter.hasNext())
+			System.out.println("TRUE" + iter.next());
 		
 		assertEquals(SPEED_TEST, tree.size());
-		for(Integer i : valuesAdded){
+		for(Integer i : valuesAdded) {
+			System.out.println("WHAT" + i);
 			assertTrue("Could not remove previously added node.", tree.remove(i));
 
 		}
@@ -177,7 +181,6 @@ public class BinarySearchTreeTest {
 		values.add(7);
 		for(Integer i : tree){
 			Integer toCheck = values.remove();
-			System.out.println(toCheck);
 			assertEquals(toCheck, i);
 		}
 		

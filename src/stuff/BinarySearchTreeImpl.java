@@ -9,7 +9,7 @@ import structures.InOrderIterator;
 public class BinarySearchTreeImpl<T extends Comparable<? super T>> implements BinarySearchTree<T> {
 	int size = 0;
 	BinaryTreeNode<T> root;
-	
+
 	public BinarySearchTreeImpl() {
 		size = 0;
 		root = null;
@@ -19,60 +19,26 @@ public class BinarySearchTreeImpl<T extends Comparable<? super T>> implements Bi
 	public BinarySearchTree<T> add(T toAdd) {
 		if (toAdd == null)
 			throw new NullPointerException("Adderthing is null");
+
 		if (isEmpty()) {
 			root = new BinaryTreeNodeImpl<T>(null, toAdd, null);
+			size++;
+			return this;
+		} else {
+
+			BinaryTreeNode<T> current = root;
+			return add(toAdd, current);
 		}
-		
-		BinaryTreeNode<T> current = root;
-		size++;
-		return add(toAdd, current);
-		
-//		BinaryTreeNode<T> temp = new BinaryTreeNodeImpl<T> (null, toAdd, null);
-//		T comparableElement = toAdd;
-//		if (isEmpty())
-//		      root = temp;
-//		else {
-//		      BinaryTreeNode<T> current = root;
-//		      boolean added = false;
-//		      while (!added)
-//		      {
-//		         if (toAdd.compareTo(current.getData()) < 0)
-//		         {
-//		            if (!current.hasLeftChild())
-//		            {
-//		               current.setLeftChild(temp);
-//		               added = true;
-//		               System.out.println("Added " + toAdd);
-//		            }
-//		            else
-//		               current = current.getLeftChild();
-//		} else {
-//		            if (!current.hasRightChild())
-//		            {
-//		               current.setRightChild(temp);
-//		               added = true;
-//		               System.out.println("Added " + toAdd);
-//		            }
-//		            else
-//		               current = current.getRightChild();
-//		} 
-//		        }
-//		}
-		   
-		//size++; 
-		//213567
-		//4213567
-		//return add(toAdd, root);
-		}
-		
-	
+	}
+
+
 	private BinarySearchTree<T> add(T toAdd, BinaryTreeNode<T> node) {
-	
+
 		if (toAdd.compareTo(node.getData()) < 0) {
 			if (!node.hasLeftChild()) {
 				BinaryTreeNode<T> temp = new BinaryTreeNodeImpl<T> (null, toAdd, null);
 				node.setLeftChild(temp);
-				System.out.println("added " + toAdd);
+				size++;
 				return this;
 			} else {
 				add(toAdd, node.getLeftChild());
@@ -81,38 +47,14 @@ public class BinarySearchTreeImpl<T extends Comparable<? super T>> implements Bi
 			if (!node.hasRightChild()) {
 				BinaryTreeNode<T> temp = new BinaryTreeNodeImpl<T> (null, toAdd, null);
 				node.setRightChild(temp);
-				System.out.println("added " + toAdd);
+				size++;
+				return this;
 			} else {
 				add(toAdd, node.getRightChild());
 			}
 		}
 		return this;
 	}
-	
-	@Override
-	public boolean contains(T toFind) {
-		if (toFind == null)
-			throw new NullPointerException("Containerthing is null");
-		if (isEmpty())
-			return false;
-		return contains(toFind, root);
-	}
-	
-	public boolean contains(T toFind, BinaryTreeNode<T> current) {
-		if (current.getData().equals(toFind)) {
-			return true;
-		}
-		
-		if (current.hasLeftChild()) {
-			return contains(toFind, current.getLeftChild());
-		}
-		else if (current.hasRightChild()) {
-			return contains(toFind, current.getRightChild());
-		}
-		return false;
-	}
-
-	
 
 	@Override
 	public int size() {
@@ -130,30 +72,30 @@ public class BinarySearchTreeImpl<T extends Comparable<? super T>> implements Bi
 	public T getMinimum() {
 		if (isEmpty())
 			throw new IllegalStateException("Minimum is empty");
-		
+
 		return getMinimum(root, root.getData());
 	}
-	
+
 	private T getMinimum(BinaryTreeNode<T> node, T lowest) {
 		// if root.getData < lowest, update value.
-		
+
 		if (node != null) {
 			if (node.getData().compareTo(lowest) < 0) {
 				lowest = node.getData();
 			}
 		}
-		
+
 		if (node.hasLeftChild()) {
 			//Traverse down left branch
-			
+
 			return getMinimum(node.getLeftChild(), lowest);
 		}
-		
+
 		else if (node.hasRightChild()) {
 			//Traverse down right branch
 			return getMinimum(node.getRightChild(), lowest);
 		}
-		
+
 		return lowest;
 	}
 
@@ -161,25 +103,25 @@ public class BinarySearchTreeImpl<T extends Comparable<? super T>> implements Bi
 	public T getMaximum() {
 		if (isEmpty())
 			throw new IllegalStateException("Maximum is empty");
-		
+
 		return getMaximum(root, root.getData());
 	}
-	
+
 	private T getMaximum(BinaryTreeNode<T> node, T largest) {
-		
+
 		if (node != null) {
 			if (node.getData().compareTo(largest) > 0) {
 				largest = node.getData();
 			}
 		}
-		
-		
+
+
 		if (node.hasRightChild()) {
 			return getMaximum(node.getRightChild(), largest);
 		} else if (node.hasLeftChild()) {
 			return getMaximum(node.getLeftChild(), largest);
 		}
-		
+
 		return largest;
 	}
 
@@ -195,11 +137,136 @@ public class BinarySearchTreeImpl<T extends Comparable<? super T>> implements Bi
 		// TODO Auto-generated method stub
 		return new InOrderIterator<T>(root);
 	}
-	
+
 	@Override
 	public boolean remove(T toRemove) {
+		if (isEmpty()) {
+			System.out.println("wefq");
+			return false;
+		}
+		else {
+			BinaryTreeNode<T> parent = null;
+			if (toRemove.equals(root.getData())) {
+				BinaryTreeNode<T> temp = replacement(root);
+				if (temp == null)
+					root = null;
+				else {
+					root.setData(temp.getData());
+					if (temp.hasRightChild())
+						root.setRightChild(temp.getRightChild());
+					if (temp.hasLeftChild())
+						root.setLeftChild(temp.getLeftChild());
+				}
+				
+				size--;
+				return true;
+			}
+			else {
+				parent = root;
+				if (toRemove.compareTo(root.getData()) < 0) {
+					if (root.hasLeftChild()) {
+						return remove(toRemove, root.getLeftChild(), parent);
+					}
+					else {
+						return false;
+					}
+				} else {
+					if (root.hasRightChild()) {
+						return remove(toRemove, root.getRightChild(), parent);
+					}
+					else {
+						return false;
+					}
+				}
+			}
+		}
+
+	}
+
+	private boolean remove(T target, BinaryTreeNode<T> current, BinaryTreeNode<T> parent) {
+		if (current == null) {
+			return false;
+		}
+		else {
+			if (target.equals(current.getData())) {
+				BinaryTreeNode<T> temp = replacement(current);
+				if (parent.getRightChild() == current) {
+					parent.setRightChild(temp);
+				} else {
+					parent.setLeftChild(temp);
+				}
+				size--;
+				return true;
+			}
+			else {
+				parent = current;
+				if (target.compareTo(current.getData()) < 0) {
+					return remove(target, current.getLeftChild(), parent);
+				} else {
+					return remove(target, current.getRightChild(), parent);
+				}
+			}
+		}
+	}
+
+	private BinaryTreeNode<T> replacement(BinaryTreeNode<T> node) {
+		BinaryTreeNode<T> result = null;
+
+		if (!node.hasLeftChild() && !node.hasRightChild()) {
+			result = null;
+		} else if (node.hasLeftChild() && !node.hasRightChild()) {
+			result = node.getLeftChild();
+		} else if (!node.hasLeftChild() && node.hasRightChild()) {
+			result = node.getRightChild();
+		} else {
+			BinaryTreeNode<T> current = node.getRightChild();
+			BinaryTreeNode<T> parent = node;
+
+			while (current.hasLeftChild()) {
+				parent = current;
+				current = current.getLeftChild();
+			}
+
+			current.setLeftChild(node.getLeftChild());
+			if (node.getRightChild() != current) {
+				parent.setLeftChild(current.getRightChild());
+				current.setRightChild(node.getRightChild());
+			}
+			result = current;
+		}	
+		return result;
+	}
+
+
+	@Override
+	public boolean contains(T toFind) {
+		if (toFind == null) {
+			throw new NullPointerException();
+		}
+		return contains(toFind, root);
+	}
+
+	public boolean contains(T toFind, BinaryTreeNode<T> branch) {
+		if (branch != null) {
+			if (toFind.equals(branch.getData())) {
+				return true;
+			} else {
+				if(toFind.compareTo(branch.getData()) < 0) {
+					if (branch.hasLeftChild()) 
+						return contains(toFind, branch.getLeftChild());
+					else
+						return false;
+				}
+				else {
+					if (branch.hasRightChild())
+						return contains(toFind, branch.getRightChild());
+					else
+						return false;
+				}
+			}
+
+		}
 		return false;
 	}
 }
 
-	
