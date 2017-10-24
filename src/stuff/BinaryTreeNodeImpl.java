@@ -70,5 +70,9 @@ public class BinaryTreeNodeImpl<T> implements BinaryTreeNode<T>{
 			throw new NullPointerException("Right Parameter is Null");
 		this.right = right;
 	}
+	
+	public boolean hasNoChildren() {
+		return (right == null && left == null);
+	}
 
 }

@@ -65,4 +65,6 @@ public interface BinaryTreeNode<T> {
 	 */
 	public void setRightChild(BinaryTreeNode<T> right);
 	
+	public boolean hasNoChildren();
+	
 }

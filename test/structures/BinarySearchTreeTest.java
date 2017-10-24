@@ -18,7 +18,7 @@ import config.Configuration;
 public class BinarySearchTreeTest {
 
 	private BinarySearchTree<Integer> tree;
-	private static final int SPEED_TEST = 10; //1 << 12;
+	private static final int SPEED_TEST = 1 << 12;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -52,9 +52,12 @@ public class BinarySearchTreeTest {
 		
 		assertFalse("Tree should not contain 5.", tree.contains(5));
 		assertEquals("Add should return tree for convenience.", tree, tree.add(5));
+		
 		assertTrue("After add, contains should return true.", tree.contains(5));
 		
 	}
+	
+	
 	
 	@Test (timeout = 1000)
 	public void testRandomAddContains() {
@@ -84,6 +87,7 @@ public class BinarySearchTreeTest {
 		tree.contains(null);
 	}
 	
+	
 	@Test (timeout = 100)
 	public void testSimpleAddRemoveAndSize() {
 		assertEquals("Add should return tree for convenience.", tree, tree.add(1));
@@ -98,7 +102,7 @@ public class BinarySearchTreeTest {
 		assertEquals(3, tree.size());
 		assertTrue(tree.remove(5));
 		assertEquals(2, tree.size());
-		assertTrue(tree.remove(5));
+		assertTrue(tree.remove(5)); 
 		assertEquals(1, tree.size());
 		assertTrue(tree.remove(5));
 		assertEquals(0, tree.size());
