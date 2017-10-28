@@ -2,6 +2,7 @@ package structures;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -18,7 +19,7 @@ import config.Configuration;
 public class BinarySearchTreeTest {
 
 	private BinarySearchTree<Integer> tree;
-	private static final int SPEED_TEST = 1 << 12;
+	private static final int SPEED_TEST = 8;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -110,7 +111,7 @@ public class BinarySearchTreeTest {
 		assertTrue(tree.isEmpty());
 	}
 	
-	@Test (timeout = 1000)
+	@Test (timeout = 50000000)
 	public void testRandomAddRemoveAndSize() {
 		Random r = new Random(42);
 		List<Integer> valuesAdded = new LinkedList<Integer>();
@@ -122,18 +123,54 @@ public class BinarySearchTreeTest {
 			assertEquals("Add should return tree for convenience.", tree, tree.add(next));
 			assertTrue("After add, contains should return true.", tree.contains(next));
 		}
-		Iterator<Integer> iter = tree.iterator();
-		while(iter.hasNext())
-			System.out.println("TRUE" + iter.next());
+		Iterator<Integer> itr = tree.iterator();
 		
+		while(itr.hasNext())
+		    System.out.println(itr.next());
 		assertEquals(SPEED_TEST, tree.size());
 		for(Integer i : valuesAdded) {
-			System.out.println("WHAT" + i);
+		    System.out.println("Attempting to remove "+ i + "...");
+		    System.out.println(tree.remove(i));
+		    
 			assertTrue("Could not remove previously added node.", tree.remove(i));
-
 		}
+		Iterator<Integer> itr2 = tree.iterator();
+		while(itr2.hasNext()) {
+            System.out.println(itr2.next());
+		}
+        
 		assertEquals(0, tree.size());
 		assertTrue(tree.isEmpty());		
+	}
+	
+	private void assertIteratorContains(Iterator<Integer> itr, Integer ... elems){
+		List<Integer> found = new LinkedList<Integer>();
+		for(Integer e : elems){
+			if(!itr.hasNext())
+				fail("Expected iterator to produce " + Arrays.toString(elems) + " but produced " + found);
+			Integer test = itr.next();
+			found.add(test);
+			if(!test.equals(e))
+				fail("Expected iterator to produce " + Arrays.toString(elems) + " but start of iterator produced " + found);
+		}
+		
+		if(itr.hasNext()){
+			while(itr.hasNext())
+				found.add(itr.next());
+			fail("Expected iterator to produce " + Arrays.toString(elems) + " but produced " + found);
+		}
+		
+	}
+	
+	@Test (timeout = 1000)
+	public void testActualTreeRemove() {
+		tree.add(50).add(49).add(47).add(48).add(51).add(58).add(57).add(59);
+		assertTrue("Unable to remove node", tree.remove(59));
+		Iterator<Integer> iter = tree.iterator();
+
+		assertFalse(tree.contains(59));
+		assertTrue(tree.size() == 7);
+		
 	}
 	
 	@Test (timeout = 100)

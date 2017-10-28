@@ -58,16 +58,12 @@ public class BinaryTreeNodeImpl<T> implements BinaryTreeNode<T>{
 
 	@Override
 	public void setLeftChild(BinaryTreeNode<T> left) {
-		if (left == null)
-			throw new NullPointerException("Left Parameter is Null");
 		this.left = left;
 		
 	}
 
 	@Override
 	public void setRightChild(BinaryTreeNode<T> right) {
-		if (right == null)
-			throw new NullPointerException("Right Parameter is Null");
 		this.right = right;
 	}
 	
