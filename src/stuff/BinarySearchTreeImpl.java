@@ -208,53 +208,57 @@ public class BinarySearchTreeImpl<T extends Comparable<? super T>> implements Bi
         }
     }
 
-    private void replaceNodeTwoChildren(BinaryTreeNode<T> node, BinaryTreeNode<T> parent1) {
-        BinaryTreeNode<T> current = node;
-        BinaryTreeNode<T> parent = parent1;
-        if (current.hasLeftChild()) {
-            while(current.hasLeftChild()) {
-                parent = current;
-                current = current.getLeftChild();
-
-            }
+    private void replaceNodeTwoChildren(BinaryTreeNode<T> node) {
+        BinaryTreeNode<T> current = node.getRightChild();
+        BinaryTreeNode<T> parent = node;
+        
+        while(current.hasLeftChild()) {
+            parent = current;
+            current = current.getLeftChild();
         }
-
-        if (current.hasLeftChild())
-            current.setLeftChild(node.getLeftChild());
-        else
-            current.setLeftChild(null);
-        if (parent.hasRightChild()) {
-
-            if (parent.getRightChild() != current) {
-                if (current.hasLeftChild()) {
-                    parent.setLeftChild(current.getLeftChild());
-                } else {
-                    parent.setLeftChild(null);
-                }
-
-                if (current.hasRightChild()) {
-                    current.setRightChild(current.getRightChild());
-                }
-                else {
-                    current.setRightChild(null);
-                }
-            }
-        }
-
-    }
-
-
-    private void replaceNodeNoChildren(BinaryTreeNode<T> node, BinaryTreeNode<T> parent) {
-        if (parent.hasRightChild()) {
-            if (parent.getRightChild() == node) {
-                parent.setRightChild(null);
-            }
+        
+        if (node.hasRightChild() && node.getRightChild().equals(current)) {
+           if (node.hasLeftChild()) {
+               current.setLeftChild(node.getLeftChild());
+           } else {
+               current.setLeftChild(null);
+           }
+           node = current;
+           
+           System.out.println("YET");
+           System.out.println(node.getData());
+           System.out.println(node.getLeftChild().getData());
         } else {
-            if (parent.getLeftChild() == node) {
+            //Why?
+            if (current.hasLeftChild()) {
+                parent.setLeftChild(current.getRightChild());
+            } else {
                 parent.setLeftChild(null);
             }
+            
+            if (node.hasRightChild()) {
+                current.setRightChild(node.getRightChild());
+            } else {
+                current.setRightChild(null);
+            }
+            if (node.hasLeftChild()) {
+                current.setLeftChild(node.getLeftChild());
+            } else {
+                current.setLeftChild(null);
+            }
+            node = current;
+        }
+        
         }
 
+    private void replaceNodeNoChildren(BinaryTreeNode<T> node, BinaryTreeNode<T> parent) {
+        if (parent.hasLeftChild() && parent.getLeftChild().equals(node)) {
+            parent.setLeftChild(null);
+        } 
+        
+        if (parent.hasRightChild() && parent.getRightChild().equals(node)) {
+            parent.setRightChild(null);
+        }
     }
 
     private BinaryTreeNode<T> find(BinaryTreeNode<T> startingNode, T toRemove) {
@@ -299,124 +303,91 @@ public class BinarySearchTreeImpl<T extends Comparable<? super T>> implements Bi
 
 
     private void replace(BinaryTreeNode<T> node, BinaryTreeNode<T> parent) {
-
-        if (node.hasRightChild() && !node.hasLeftChild()) {
-            System.out.println(node.getData());
-            //System.out.println("Standard Right");
-            replaceNodeOneChild(node, parent);
-        } else if (node.hasLeftChild() && !node.hasRightChild()) {
-            //System.out.println("Standard Left");
-            replaceNodeOneChild(node, parent);
-        } else if (node.hasRightChild() && node.hasLeftChild()) {
-            replaceNodeTwoChildren(node.getRightChild(), node);
-        } else if (node.hasNoChildren()){
-            //System.out.println("Standard Node");
+        if (!node.hasLeftChild() && !node.hasRightChild() && node.hasNoChildren()) {
+            System.out.println("No Nodes");
             replaceNodeNoChildren(node, parent);
+        }
+        else if (node.hasLeftChild() && !node.hasRightChild()) {
+            System.out.println("Only Left");
+            replaceNodeOneChild(node, parent);
+        } else if (!node.hasLeftChild() && node.hasRightChild()) {
+            System.out.println("Only Right");
+            replaceNodeOneChild(node, parent);
+        } else {
+            System.out.println("Two Nodes");
+            replaceNodeTwoChildren(node); //Already Checked, Already Good
         }
     }
 
     private void replaceNodeOneChild(BinaryTreeNode<T> node, BinaryTreeNode<T> parent) {
-        BinaryTreeNode<T> left = null, right = null;
-
-        if (node.hasLeftChild()) {
-            left = node.getLeftChild();
-        } 
-
-        if (node.hasRightChild()) {
-            right = node.getRightChild();
-        }
-
-        if (parent.hasRightChild()) {
-            if (parent.getRightChild() == node) {
-                if (left != null && right == null) {
-                    parent.setRightChild(left);
-                } else if (left == null && right != null){
-                    parent.setRightChild(right);
-                }
+        if (parent.hasLeftChild() && parent.getLeftChild().equals(node)) {
+            //Where is the node?
+            if (node.hasRightChild()) {
+                parent.setLeftChild(node.getRightChild());
+            } else {
+                parent.setLeftChild(node.getLeftChild());
             }
-        } else if (parent.hasLeftChild()) {
-            if (parent.getLeftChild() == node) {
-                if (left != null && right == null) {
-                    parent.setLeftChild(left);
-                } else if (left == null && right != null){
-                    parent.setLeftChild(right);
-                }
+        }
+        
+        if (parent.hasRightChild() && parent.getRightChild().equals(node)) {
+            //Where is the node?
+            if (node.hasRightChild()) {
+                parent.setRightChild(node.getRightChild()); 
+            } else {
+                parent.setRightChild(node.getLeftChild()); 
             }
         }
 
 
     }
 
-    private void replaceRoot() { //Working as intended.
-        BinaryTreeNode<T> left = null, right = null;
-        if (root.hasRightChild()) {
-            right = root.getRightChild();
-        } 
-        if (root.hasLeftChild()) {
-            left = root.getLeftChild();
-        }
-
-        if (right != null && left == null) {
-            root = right;
-        } else if (left == null && right != null) {
-            root = left;
-        } else if (left != null && right != null) {
-           /* BinaryTreeNode<T> current = root.getRightChild();
-            BinaryTreeNode<T> parent = root;
-            if (current.hasLeftChild()) {
-                while(current.hasLeftChild()) {
-                    parent = current;
-                    current = current.getLeftChild();
-                }
-            }
-            if (current.hasLeftChild())
-            current.setLeftChild(current.getLeftChild());
-            else
-                current.setLeftChild(null);
-            
-                if (parent.getRightChild() != current) {
-                    if (current.hasLeftChild())
-                        parent.setLeftChild(current.getLeftChild());
-                    else
-                        parent.setLeftChild(null);
-                    if (current.hasRightChild())
-                        current.setRightChild(current.getRightChild());
-                    else
-                        current.setRightChild(null);*/
-            
+    private void replaceRoot() {
+        if (root.hasNoChildren()) {
+            root = null;
+        } else if (root.hasLeftChild() && !root.hasRightChild()) {
+            root = root.getLeftChild();
+        } else if (!root.hasLeftChild() && root.hasRightChild()) {
+            root = root.getRightChild();
+        } else {
             BinaryTreeNode<T> current = root.getRightChild();
             BinaryTreeNode<T> parent = root;
-            if (current.hasLeftChild()) {
-                while(current.hasLeftChild()) {
-                    parent = current;
-                    current = current.getLeftChild();
-
-                }
+            
+            while(current.hasLeftChild()) {
+                parent = current;
+                current = current.getLeftChild();
             }
-
-            if (current.hasLeftChild())
-                current.setLeftChild(current.getLeftChild());
-            else
-                current.setLeftChild(null);
-            if (parent.hasRightChild()) {
-
-                if (parent.getRightChild() != current) {
-                    if (current.hasLeftChild()) {
-                        parent.setLeftChild(current.getLeftChild());
-                    } else {
-                        parent.setLeftChild(null);
-                    }
-
-                    if (current.hasRightChild()) {
-                        current.setRightChild(current.getRightChild());
-                    }
-                    else {
-                        current.setRightChild(null);
-                    }
+            
+            if (root.hasRightChild() && root.getRightChild().equals(current)) {
+               if (root.hasLeftChild()) {
+                   current.setLeftChild(root.getLeftChild());
+               } else {
+                   current.setLeftChild(null);
+               }
+               root = current;
+               
+               System.out.println("YET");
+               System.out.println(root.getData());
+               System.out.println(root.getLeftChild().getData());
+            } else {
+                //Why?
+                if (current.hasLeftChild()) {
+                    parent.setLeftChild(current.getRightChild());
+                } else {
+                    parent.setLeftChild(null);
                 }
-            } 
-        } else if (left == null && right == null){
-            root = null;
+                
+                if (root.hasRightChild()) {
+                    current.setRightChild(root.getRightChild());
+                } else {
+                    current.setRightChild(null);
+                }
+                if (root.hasLeftChild()) {
+                    current.setLeftChild(root.getLeftChild());
+                } else {
+                    current.setLeftChild(null);
+                }
+                root = current;
+            }
         }
     }
 

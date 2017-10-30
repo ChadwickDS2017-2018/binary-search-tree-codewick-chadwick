@@ -111,7 +111,7 @@ public class BinarySearchTreeTest {
 		assertTrue(tree.isEmpty());
 	}
 	
-	@Test (timeout = 50000000)
+	@Test (timeout = 1000)
 	public void testRandomAddRemoveAndSize() {
 		Random r = new Random(42);
 		List<Integer> valuesAdded = new LinkedList<Integer>();
@@ -123,21 +123,13 @@ public class BinarySearchTreeTest {
 			assertEquals("Add should return tree for convenience.", tree, tree.add(next));
 			assertTrue("After add, contains should return true.", tree.contains(next));
 		}
-		Iterator<Integer> itr = tree.iterator();
-		
-		while(itr.hasNext())
-		    System.out.println(itr.next());
 		assertEquals(SPEED_TEST, tree.size());
 		for(Integer i : valuesAdded) {
 		    System.out.println("Attempting to remove "+ i + "...");
-		    System.out.println(tree.remove(i));
 		    
 			assertTrue("Could not remove previously added node.", tree.remove(i));
 		}
-		Iterator<Integer> itr2 = tree.iterator();
-		while(itr2.hasNext()) {
-            System.out.println(itr2.next());
-		}
+		
         
 		assertEquals(0, tree.size());
 		assertTrue(tree.isEmpty());		
@@ -164,12 +156,27 @@ public class BinarySearchTreeTest {
 	
 	@Test (timeout = 1000)
 	public void testActualTreeRemove() {
-		tree.add(50).add(49).add(47).add(48).add(51).add(58).add(57).add(59);
-		assertTrue("Unable to remove node", tree.remove(59));
-		Iterator<Integer> iter = tree.iterator();
-
-		assertFalse(tree.contains(59));
-		assertTrue(tree.size() == 7);
+		tree.add(10).add(5).add(15).add(3).add(7).add(13);
+		Iterator<Integer> itr = tree.iterator();
+        
+        while(itr.hasNext())
+            System.out.println(itr.next());
+		
+		assertTrue("Unable to remove node", tree.remove(3));
+		assertFalse("Remove No Nodes Not Working", tree.contains(3));
+		assertTrue("Unable to remove node", tree.remove(5));
+		assertFalse("Remove One Nodes Not Working", tree.contains(5));
+		assertFalse("Unable to remove node", tree.remove(5));
+		assertTrue("Unable to remove node", tree.remove(10));
+		assertFalse("Remove Root Two Nodes Not Working", tree.contains(10));
+		Iterator<Integer> itr2 = tree.iterator();
+        
+        while(itr2.hasNext())
+            System.out.println(itr2.next());
+        
+		assertTrue(tree.size() == 3);
+		
+		
 		
 	}
 	
